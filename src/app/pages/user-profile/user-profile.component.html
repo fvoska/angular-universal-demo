@@ -1,3 +1,9 @@
-user id: <strong>{{ authService.user?.id }}</strong>
-<br>
-email: <strong>{{ authService.user?.email }}</strong>
+<ng-container *ngIf="authService.isUserLoggedIn; else accessDenied">
+  user id: <strong>{{ authService.user?.id }}</strong>
+  <br>
+  email: <strong>{{ authService.user?.email }}</strong>
+</ng-container>
+
+<ng-template #accessDenied>
+  <app-access-denied></app-access-denied>
+</ng-template>

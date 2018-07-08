@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as express from 'express';
 import * as http from 'http';
+import { IHomepageContent } from './app/interfaces/homepage-content.interface';
 
 // Express server
 const app = express();
@@ -19,8 +20,24 @@ app.use((_req: Request, res: Response, next: any) => {
   next();
 });
 
+// Homepage data
+
+app.get('/homepage', (req: Request, res: Response) => {
+  console.log('homepage', new Date(Date.now()).toLocaleString());
+
+  const homepage: IHomepageContent = {
+    title: 'Welcome',
+    text: 'Angular Universal Demo',
+    time: Date.now(),
+  };
+
+  return res.send(homepage);
+});
+
 // Login
 app.post('/login', (req: Request, res: Response) => {
+  console.log('login', new Date(Date.now()).toLocaleString());
+
   if (req.body.email === email && req.body.password === password) {
     return res.send({
       token,
@@ -32,6 +49,8 @@ app.post('/login', (req: Request, res: Response) => {
 
 // User info
 app.get('/self', (req: Request, res: Response) => {
+  console.log('self', new Date(Date.now()).toLocaleString());
+
   if (req.headers.authorization === token) {
     return res.send({ id, email });
   } else if (!req.query.token) {

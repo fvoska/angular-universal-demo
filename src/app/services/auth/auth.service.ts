@@ -17,6 +17,7 @@ export class AuthService {
   public user: User;
   private _token: string;
   private readonly authCookieName: string = 'token';
+  private apiBase: string = this.env.getVar(ExposedEnvironmentVariable.API_BASE);
 
   constructor(
     private http: HttpClient,
@@ -113,9 +114,5 @@ export class AuthService {
 
   public get isUserLoggedIn(): boolean {
     return Boolean(this.user && this.token);
-  }
-
-  private get apiBase(): string {
-    return this.env.getVar(ExposedEnvironmentVariable.API_BASE);
   }
 }
