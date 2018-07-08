@@ -1,7 +1,15 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth/auth.guard';
 
-const routes: Routes = [];
+const routes: Routes = [{
+  path: '',
+  loadChildren: './pages/home/home.module#HomeModule',
+}, {
+  path: 'user-profile',
+  loadChildren: './pages/user-profile/user-profile.module#UserProfileModule',
+  canActivate: [AuthGuard],
+}];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

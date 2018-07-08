@@ -1,6 +1,14 @@
-# AngularUniversalDemo
+# Angular Universal Demo
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
+Official [Angular Universal guide.](https://angular.io/guide/universal).
+
+## Why universal
+
+There are three main reasons to create a Universal version of your app:
+
+1. Facilitate web crawlers (SEO)
+2. Improve performance on mobile and low-powered devices
+3. Show the first page quickly
 
 ## Development server
 

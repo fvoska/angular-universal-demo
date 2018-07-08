@@ -1,0 +1,10 @@
+<ng-container *ngIf="authService.isUserLoggedIn; else logIn">
+  <button (click)="onLogOutClick()">Log out</button>
+</ng-container>
+
+<ng-template #logIn>
+  Email: <input type="email" [(ngModel)]="email">
+  Password: <input type="password" [(ngModel)]="password">
+
+  <button (click)="onLogInClick()">Log in</button>
+</ng-template>
