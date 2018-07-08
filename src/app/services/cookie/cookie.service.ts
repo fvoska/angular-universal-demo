@@ -1,5 +1,5 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-// import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { Request } from 'express';
 import { CookieAttributes, get, getJSON, remove, set } from 'js-cookie';
 import { IDictionary } from './../../interfaces/dictionary.interface';
@@ -10,7 +10,7 @@ import { PlatformService } from './../platform/platform.service';
 })
 export class CookieService {
   constructor(
-    @Optional() @Inject('REQUEST') private request: Request,
+    @Optional() @Inject(REQUEST) private request: Request,
     private platform: PlatformService,
   ) { }
 

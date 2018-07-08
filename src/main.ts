@@ -8,5 +8,9 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.log(err));
+document.addEventListener('DOMContentLoaded', () => {
+  // Bootstrap after SSR content is loaded (required for TransferState functionality)
+  platformBrowserDynamic().bootstrapModule(AppModule).catch((err: any) => {
+    console.log(err);
+  });
+});

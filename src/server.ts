@@ -21,16 +21,29 @@ const DIST_FOLDER = join(process.cwd(), 'dist');
 const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('../dist/server/main');
 
 // Express Engine
-import { ngExpressEngine } from '@nguniversal/express-engine';
+import { ngExpressEngine, RenderOptions } from '@nguniversal/express-engine';
+import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 // Import module map for lazy loading
 import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 
-app.engine('html', ngExpressEngine({
+app.engine('html', (
+  filePath: string,
+  options: RenderOptions,
+  callback: (err ?: Error | null | undefined, html?: string | undefined) => void,
+) => ngExpressEngine({
   bootstrap: AppServerModuleNgFactory,
   providers: [
-    provideModuleMap(LAZY_MODULE_MAP)
-  ]
-}));
+    provideModuleMap(LAZY_MODULE_MAP),
+    {
+      provide: REQUEST,
+      useValue: options.req,
+    },
+    {
+      provide: RESPONSE,
+      useValue: options.req.res,
+    },
+  ],
+})(filePath, options, callback));
 
 app.set('view engine', 'html');
 app.set('views', join(DIST_FOLDER, 'browser'));

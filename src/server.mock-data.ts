@@ -23,7 +23,7 @@ app.use((_req: Request, res: Response, next: any) => {
 // Homepage data
 
 app.get('/homepage', (req: Request, res: Response) => {
-  console.log('homepage', new Date(Date.now()).toLocaleString());
+  console.log('/homepage', new Date(Date.now()).toLocaleString());
 
   const homepage: IHomepageContent = {
     title: 'Welcome',
@@ -36,7 +36,7 @@ app.get('/homepage', (req: Request, res: Response) => {
 
 // Login
 app.post('/login', (req: Request, res: Response) => {
-  console.log('login', new Date(Date.now()).toLocaleString());
+  console.log('/login', new Date(Date.now()).toLocaleString());
 
   if (req.body.email === email && req.body.password === password) {
     return res.send({
@@ -48,11 +48,26 @@ app.post('/login', (req: Request, res: Response) => {
 });
 
 // User info
-app.get('/self', (req: Request, res: Response) => {
-  console.log('self', new Date(Date.now()).toLocaleString());
+app.get('/user', (req: Request, res: Response) => {
+  console.log('/user', new Date(Date.now()).toLocaleString());
 
   if (req.headers.authorization === token) {
     return res.send({ id, email });
+  } else if (!req.query.token) {
+    return res.sendStatus(401);
+  } else if (req.query.token !== token) {
+    return res.sendStatus(403);
+  }
+
+  return res.sendStatus(400);
+});
+
+// Login status check
+app.get('/login-check', (req: Request, res: Response) => {
+  console.log('/login-check', new Date(Date.now()).toLocaleString());
+
+  if (req.headers.authorization === token) {
+    return res.sendStatus(204);
   } else if (!req.query.token) {
     return res.sendStatus(401);
   } else if (req.query.token !== token) {
