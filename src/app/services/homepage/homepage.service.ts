@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { Observable, of as observableOf } from 'rxjs';
-import { delay, map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ExposedEnvironmentVariable } from '../../../environments/exposed-environment-variables';
 import { IHomepageContent } from '../../interfaces/homepage-content.interface';
 import { HomepageContent } from '../../models/homepage-content';
@@ -30,7 +30,7 @@ export class HomepageService {
 
       const homepage = new HomepageContent(transferedHomepageData);
 
-      return observableOf(homepage).pipe(delay(0));
+      return observableOf(homepage);
     }
 
     return this.http.get(`${this.apiBase}/homepage`).pipe(

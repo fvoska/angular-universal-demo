@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { RESPONSE } from '@nguniversal/express-engine/tokens';
 import { Response } from 'express';
 import { EMPTY, Observable, of as observableOf, throwError } from 'rxjs';
-import { catchError, delay, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { ExposedEnvironmentVariable } from '../../../environments/exposed-environment-variables';
 import { ILoginResponse } from '../../interfaces/login-response.interface';
 import { IUser } from '../../interfaces/user.interface';
@@ -38,7 +38,7 @@ export class AuthService {
     this.token = token;
 
     if (this.token) {
-      this.getUserInfo().pipe(catchError(() => EMPTY)).subscribe();
+      this.getUserInfo(true).pipe(catchError(() => EMPTY)).subscribe();
     }
   }
 
@@ -80,19 +80,27 @@ export class AuthService {
     this.router.navigateByUrl('/');
   }
 
-  public getUserInfo(): Observable<User> {
-    const transferedUserData: IUser = this.transferState.get(this.userStateKey, null);
-    if (this.platform.isBrowser && transferedUserData) {
-      this.transferState.remove(this.userStateKey);
+  public getUserInfo(checkTransferedUser: boolean = false): Observable<User> {
+    if (checkTransferedUser) {
+      const transferedUserData: IUser = this.transferState.get(this.userStateKey, null);
+      if (this.platform.isBrowser && transferedUserData !== undefined) {
+        this.transferState.remove(this.userStateKey);
 
-      const user = new User({
-        id: transferedUserData.id,
-        email: transferedUserData.email
-      });
+        if (!transferedUserData) {
+          this.cookie.deleteCookie(this.authCookieName);
 
-      this.user = user;
+          return throwError(new Error('invalid user'));
+        }
 
-      return observableOf(user).pipe(delay(0));
+        const user = new User({
+          id: transferedUserData.id,
+          email: transferedUserData.email,
+        });
+
+        this.user = user;
+
+        return observableOf(user);
+      }
     }
 
     return this.http.get(`${this.apiBase}/user`, {
@@ -103,8 +111,9 @@ export class AuthService {
       catchError((error: HttpErrorResponse) => {
         this.token = null;
 
-        if (this.platform.isServer && this.response) {
-          this.response.status(error.status);
+        if (this.platform.isServer) {
+          this.response.status(401);
+          this.transferState.set(this.userStateKey, null);
         }
 
         return throwError(error);
@@ -133,7 +142,7 @@ export class AuthService {
     if (this.platform.isBrowser && transferedLoginCheckData !== undefined) {
       this.transferState.remove(this.loginCheckStateKey);
 
-      return observableOf(transferedLoginCheckData).pipe(delay(0));
+      return observableOf(transferedLoginCheckData);
     }
 
     return this.http.get(`${this.apiBase}/login-check`, {
