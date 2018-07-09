@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
-import { ExposedEnvironmentVariable, exposedEnvironmentVariables, defaultEnvironmentVariablesValues } from '../../../environments/exposed-environment-variables';
+import {
+  defaultEnvironmentVariablesValues,
+  ExposedEnvironmentVariable,
+  exposedEnvironmentVariables
+} from '../../../environments/exposed-environment-variables';
 import { IDictionary } from '../../interfaces/dictionary.interface';
 import { PlatformService } from '../platform/platform.service';
 
