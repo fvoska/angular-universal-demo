@@ -14,6 +14,9 @@ enableProdMode();
 // Express server
 const app = express();
 
+import * as compression from 'compression';
+app.use(compression());
+
 const PORT = process.env.PORT || 4200;
 const DIST_FOLDER = join(process.cwd(), 'dist');
 
